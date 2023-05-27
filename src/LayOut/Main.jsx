@@ -1,16 +1,20 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Footer from '../Pages/Shared/Footer/Footer';
-import NavBar from '../Pages/Shared/NavBar/NavBar';
+import React from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import Footer from "../Pages/Shared/Footer/Footer";
+import NavBar from "../Pages/Shared/NavBar/NavBar";
 
 const Main = () => {
-    return (
-        <div>
-            <NavBar></NavBar>
-            <Outlet></Outlet>
-            <Footer></Footer>
-        </div>
-    );
+  const location = useLocation();
+  const removeNavFoot =
+    location.pathname.includes("/login") ||
+    location.pathname.includes("/signUp");
+  return (
+    <div>
+      {removeNavFoot || <NavBar></NavBar>}
+      <Outlet></Outlet>
+      {removeNavFoot || <Footer></Footer>}
+    </div>
+  );
 };
 
 export default Main;
