@@ -10,6 +10,9 @@ const ShopCart = ({ item }) => {
       <div className="card-body items-center text-center">
         <h2 className="card-title">{name}</h2>
         <p className="text-base text-[#151515]">{recipe}</p>
+        <p className="py-2 px-5 bg-black text-white text-base font-semibold absolute top-5 right-5">
+          ${price}
+        </p>
         <div className="text-center">
           <button
             className=" hover:bg-[#1F2937] py-5 px-8 rounded-lg bg-[#E8E8E8] border-b-4 border-[#BB8506] text-xl font-medium uppercase text-[#BB8506]
