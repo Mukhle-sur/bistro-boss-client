@@ -1,0 +1,16 @@
+.divider:before {
+  background: white;
+}
+.divider::after {
+  background: white;
+}
+.drawer-side ul li a {
+  background: transparent;
+}
+/* .drawer-side ul li a.active{
+    color: white;
+} */
+
+.text {
+  color: white;
+}

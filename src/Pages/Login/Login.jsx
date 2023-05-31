@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   loadCaptchaEnginge,
   LoadCanvasTemplateNoReload,
@@ -9,26 +9,52 @@ import {
 import loginImg from "../../assets/others/authentication.png";
 import img from "../../assets/others/authentication1.png";
 import SocialLogin from "../Shared/SocialLogin/SocialLogin";
-
-// const captchaRef = useRef();
-// const user_captcha_value = captchaRef.current.value;
+import { AuthContext } from "../../provider/AuthProvider";
+import Swal from "sweetalert2";
 
 const Login = () => {
+  const { signIn } = useContext(AuthContext);
+  const [disabled, setDisabled] = useState(true);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   useEffect(() => {
     loadCaptchaEnginge(6);
   }, []);
-//   console.log(user_captcha_value);
+
   const handleLogin = (event) => {
     event.preventDefault();
     const form = event.target;
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
-    // if (validateCaptcha(user_captcha_value) === true) {
-    //   alert("successfully");
-    // } else {
-    //   alert("Captcha Does Not Match");
-    // }
+    signIn(email, password)
+      .then((result) => {
+        const loginUser = result.user;
+        console.log(loginUser);
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Login Successfully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate(from, { replace: true });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const handleValidateCaptcha = (e) => {
+    const user_captcha_value = e.target.value;
+    if (validateCaptcha(user_captcha_value)) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
   };
 
   return (
@@ -65,18 +91,6 @@ const Login = () => {
                 required
               />
             </div>
-            <div className="form-control mt-2">
-              <label className="label text-xl font-semibold">
-                <LoadCanvasTemplateNoReload />
-              </label>
-              <input
-                type="text"
-                placeholder="Captcha Type Here"
-                name="captcha"
-                className="input input-bordered"
-                required
-              />
-            </div>
             <div className="form-control mt-5">
               <label className="label text-xl font-semibold">
                 <span className="label-text">Password</span>
@@ -88,19 +102,33 @@ const Login = () => {
                 className="input input-bordered"
                 required
               />
+            </div>
+            <div className="form-control mt-2">
               <label className="label text-xl font-semibold">
-                <a href="#" className="label-text-alt link link-hover">
-                  Forgot password?
-                </a>
+                <LoadCanvasTemplateNoReload />
               </label>
+              <input
+                type="text"
+                onBlur={handleValidateCaptcha}
+                placeholder="Captcha Type Here"
+                name="captcha"
+                className="input input-bordered"
+                required
+              />
             </div>
             <div className="form-control mt-6 ">
               <input
                 type="submit"
+                disabled={disabled}
                 value="Sign In"
                 className="btn btn-error bg-[#D1A054] bg-opacity-70 border-0 text-white"
               />
             </div>
+            <label className="label text-xl font-semibold">
+              <a href="#" className="label-text-alt link link-hover">
+                Forgot password?
+              </a>
+            </label>
           </form>
           <div>
             <p className="text-center text-[#D1A054] text-lg font-semibold mt-3">

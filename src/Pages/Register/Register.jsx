@@ -1,12 +1,56 @@
-import React from "react";
+import React, { useContext } from "react";
 import SocialLogin from "../Shared/SocialLogin/SocialLogin";
 import { Link } from "react-router-dom";
 
 import loginImg from "../../assets/others/authentication.png";
 import img from "../../assets/others/authentication1.png";
+import { useForm } from "react-hook-form";
+import { AuthContext } from "../../provider/AuthProvider";
+import Swal from "sweetalert2";
 
 const Register = () => {
-  const handleRegister = (event) => {};
+  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    createUser(data.email, data.password)
+      .then((result) => {
+        const signUpUser = result.user;
+        console.log(signUpUser);
+        updateUserProfile(data.name).then(() => {
+          const saveUser = { name: data.name, email: data.email };
+          fetch("http://localhost:5000/users", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(saveUser),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.insertedId) {
+                reset();
+                Swal.fire({
+                  position: "center",
+                  icon: "success",
+                  title: "User created successfully.",
+                  showConfirmButton: false,
+                  timer: 1500,
+                });
+                navigate("/");
+              }
+            });
+        });
+      })
+      .then((error) => {
+        console.log(error);
+      });
+  };
   return (
     <div
       className=""
@@ -25,7 +69,7 @@ const Register = () => {
       >
         <div>
           <h2 className="text-4xl font-semibold text-center mb-11">Sign Up</h2>
-          <form onSubmit={handleRegister}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-control">
               <label className="label text-xl font-semibold">
                 <span className="label-text">Name</span>
@@ -33,10 +77,13 @@ const Register = () => {
               <input
                 type="text"
                 placeholder="Your Name"
+                {...register("name", { required: true })}
                 name="name"
                 className="input input-bordered"
-                required
               />
+              {errors.name && (
+                <span className="text-red-700">Name field is required</span>
+              )}
             </div>
             <div className="form-control mt-3">
               <label className="label text-xl font-semibold">
@@ -46,9 +93,12 @@ const Register = () => {
                 type="email"
                 placeholder="email"
                 name="email"
+                {...register("email", { required: true })}
                 className="input input-bordered"
-                required
               />
+              {errors.email && (
+                <span className="text-red-700">Email field is required</span>
+              )}
             </div>
             <div className="form-control mt-5">
               <label className="label text-xl font-semibold">
@@ -58,9 +108,12 @@ const Register = () => {
                 type="password"
                 placeholder="password"
                 name="password"
+                {...register("password", { required: true })}
                 className="input input-bordered"
-                required
               />
+              {errors.password && (
+                <span className="text-red-700">Password field is required</span>
+              )}
             </div>
             <div className="form-control mt-6 ">
               <input

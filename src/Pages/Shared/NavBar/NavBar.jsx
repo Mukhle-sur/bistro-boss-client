@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../provider/AuthProvider";
+import { FaShoppingCart } from "react-icons/fa";
+import useCart from "../../../Hooks/useCart";
 
 const NavBar = () => {
+  const { user, logOut } = useContext(AuthContext);
+
+  const [cart] = useCart();
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {})
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const menuBar = (
     <>
       <li>
@@ -17,7 +32,13 @@ const NavBar = () => {
         <Link to="menu">Our Menu</Link>
       </li>
       <li>
-        <Link to="shop">Our Shop</Link>
+        <Link to="/shop/salad">Our Shop</Link>
+      </li>
+      <li>
+        <Link to="dashboard/myCart" className="justify-between">
+          <FaShoppingCart></FaShoppingCart>
+          <span className="badge badge-secondary">+{cart?.length}</span>
+        </Link>
       </li>
     </>
   );
@@ -45,7 +66,7 @@ const NavBar = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 text-white"
+              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52 text-black"
             >
               {menuBar}
             </ul>
@@ -59,9 +80,15 @@ const NavBar = () => {
           <ul className="menu menu-horizontal px-1 text-white">{menuBar}</ul>
         </div>
         <div className="navbar-end">
-          <Link to="/login" className="btn">
-            Login
-          </Link>
+          {user ? (
+            <button onClick={handleLogOut} className="btn">
+              LogOut
+            </button>
+          ) : (
+            <Link to="/login" className="btn">
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </>
