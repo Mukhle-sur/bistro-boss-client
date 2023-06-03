@@ -3,10 +3,10 @@ import useCart from "../../../Hooks/useCart";
 import SectionTitle from "../../../components/SectionTitle/SectionTitle";
 import { FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const MyCart = () => {
   const [cart, refetch] = useCart();
-  console.log(cart);
   const total = cart.reduce((sum, item) => item.price + sum, 0);
 
   const handleDelete = (item) => {
@@ -45,7 +45,7 @@ const MyCart = () => {
         <div className="uppercase md:flex justify-between items-center mb-8">
           <h2>Total orders: {cart.length}</h2>
           <h2>total price: ${total}</h2>
-          <button className="btn btn-error btn-sm">Pay</button>
+          <Link to="/dashboard/payment"><button className="btn btn-error btn-sm">Pay</button></Link>
         </div>
         <div>
           <div className="overflow-x-auto w-full">
