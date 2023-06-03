@@ -11,12 +11,11 @@ const SocialLogin = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-
   const handleGoogleLogin = () => {
     googleLogin()
       .then((result) => {
         const loginUser = result.user;
-        console.log(loginUser);
+        console.log(loginUser)
         const saveUser = {
           name: loginUser.displayName,
           email: loginUser.email,
@@ -29,7 +28,8 @@ const SocialLogin = () => {
           body: JSON.stringify(saveUser),
         })
           .then((res) => res.json())
-          .then(() => {
+          .then((data) => {
+            console.log(data);
             navigate(from, { replace: true });
           });
       })

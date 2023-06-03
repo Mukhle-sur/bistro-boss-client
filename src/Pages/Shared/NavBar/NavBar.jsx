@@ -26,7 +26,7 @@ const NavBar = () => {
         <a>Contact Us</a>
       </li>
       <li>
-        <a>Dashboard</a>
+        <Link to="/dashboard">Dashboard</Link>
       </li>
       <li>
         <Link to="menu">Our Menu</Link>

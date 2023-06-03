@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import SocialLogin from "../Shared/SocialLogin/SocialLogin";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import loginImg from "../../assets/others/authentication.png";
 import img from "../../assets/others/authentication1.png";
@@ -9,6 +9,7 @@ import { AuthContext } from "../../provider/AuthProvider";
 import Swal from "sweetalert2";
 
 const Register = () => {
+  const navigate = useNavigate();
   const { createUser, updateUserProfile } = useContext(AuthContext);
   const {
     register,
